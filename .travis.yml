@@ -1,8 +1,13 @@
 language: rust
 rust:
-  - stable
-  - beta
   - nightly
-matrix:
-  allow_failures:
-    - rust: nightly
+addons:
+  apt:
+    packages:
+      - binutils-dev
+      - jackd
+      - libcurl4-openssl-dev
+      - libdw-dev
+      - libelf-dev
+      - libjack-dev
+      - libjack0
