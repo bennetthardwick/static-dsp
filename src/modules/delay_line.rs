@@ -1,6 +1,5 @@
-use super::{Node, ReadableNode};
+use super::{Node, ReadableNode, Sample};
 use core::mem::MaybeUninit;
-use sample::Sample;
 
 pub struct DelayLine<T, const N: usize> {
     buffer: [T; N],
@@ -27,10 +26,10 @@ impl<T: Sample, const N: usize> Node<T, T> for DelayLine<T, N> {
     fn process(&mut self, input: T) -> T {
         self.buffer[self.index] = input;
 
-        if self.index == self.buffer.len() - 1 {
-            self.index = 0
-        } else {
+        if (self.index + 1) < self.buffer.len() {
             self.index += 1;
+        } else {
+            self.index = 0
         }
 
         self.read()

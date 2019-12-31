@@ -4,6 +4,7 @@ pub mod comb;
 pub mod freeverb;
 
 pub(crate) use super::node::*;
+pub(crate) use super::sample::*;
 
 pub use all_pass::*;
 pub use freeverb::*;

@@ -4,6 +4,7 @@
 
 pub mod modules;
 pub mod node;
+pub mod sample;
 
 pub use node::*;
 pub use modules::*;

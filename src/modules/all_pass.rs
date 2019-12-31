@@ -1,5 +1,4 @@
-use super::{DelayLine, Node, ReadableNode};
-use sample::Sample;
+use super::{DelayLine, IntoSample, Node, ReadableNode, Sample};
 
 pub struct AllPass<T, const N: usize> {
     delay_line: DelayLine<T, N>,
@@ -17,14 +16,11 @@ impl<T: Sample, const N: usize> Node<T, T> for AllPass<T, N> {
     fn process(&mut self, input: T) -> T {
         let delayed = self.delay_line.read();
 
-        let output = input
-            .mul_amp((-1.0).to_sample::<T::Float>())
-            .add_amp(delayed.to_signed_sample());
+        let output = -input + delayed;
 
-        let feedback: T::Float = 0.5.to_sample();
+        let feedback: T = 0.5.into_sample();
 
-        self.delay_line
-            .process(input.add_amp(delayed.mul_amp(feedback).to_signed_sample()));
+        self.delay_line.process(input + delayed * feedback);
 
         output
     }
