@@ -8,3 +8,6 @@ edition = "2018"
 
 [dependencies]
 "sample" = "0"
+
+[dev-dependencies]
+jack = "0.6"

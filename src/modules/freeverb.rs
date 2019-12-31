@@ -37,7 +37,7 @@ const ALLPASS_TUNING_R3: usize = 341 + STEREO_SPREAD;
 const ALLPASS_TUNING_L4: usize = 225;
 const ALLPASS_TUNING_R4: usize = 225 + STEREO_SPREAD;
 
-struct Freeverb<T: Sample> {
+pub struct Freeverb<T: Sample> {
     comb_1: (Comb<T, COMB_TUNING_L1>, Comb<T, COMB_TUNING_R1>),
     comb_2: (Comb<T, COMB_TUNING_L2>, Comb<T, COMB_TUNING_R2>),
     comb_3: (Comb<T, COMB_TUNING_L3>, Comb<T, COMB_TUNING_R3>),
