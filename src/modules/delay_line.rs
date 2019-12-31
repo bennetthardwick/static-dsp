@@ -25,14 +25,12 @@ impl<T: Sample, const N: usize> DelayLine<T, N> {
 impl<T: Sample, const N: usize> Node<T, T> for DelayLine<T, N> {
     #[inline]
     fn process(&mut self, input: T) -> T {
-        if let Some(value) = self.buffer.get_mut(self.index) {
-            *value = input;
+        self.buffer[self.index] = input;
 
-            if self.index == self.buffer.len() - 1 {
-                self.index = 0
-            } else {
-                self.index += 1;
-            }
+        if self.index == self.buffer.len() - 1 {
+            self.index = 0
+        } else {
+            self.index += 1;
         }
 
         self.read()
@@ -42,10 +40,7 @@ impl<T: Sample, const N: usize> Node<T, T> for DelayLine<T, N> {
 impl<T: Sample, const N: usize> ReadableNode<T> for DelayLine<T, N> {
     #[inline]
     fn read(&self) -> T {
-        self.buffer
-            .get(self.index)
-            .map(|x| *x)
-            .unwrap_or(T::equilibrium())
+        self.buffer[self.index]
     }
 }
 

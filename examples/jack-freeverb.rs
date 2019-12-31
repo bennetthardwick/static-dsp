@@ -14,8 +14,6 @@ fn main() {
     let mut audio_out_l_port = client.register_port("out_l", out_spec).unwrap();
     let mut audio_out_r_port = client.register_port("out_r", out_spec).unwrap();
 
-    let sample_rate = client.sample_rate();
-
     let mut freeverb: Freeverb<f32> = Freeverb::new();
 
     let process = jack::ClosureProcessHandler::new(
@@ -23,8 +21,8 @@ fn main() {
             let in_l = audio_in_l_port.as_slice(ps);
             let in_r = audio_in_r_port.as_slice(ps);
 
-            let mut out_l = audio_out_l_port.as_mut_slice(ps);
-            let mut out_r = audio_out_r_port.as_mut_slice(ps);
+            let out_l = audio_out_l_port.as_mut_slice(ps);
+            let out_r = audio_out_r_port.as_mut_slice(ps);
 
             for (input, (out_l, out_r)) in in_l
                 .iter()
