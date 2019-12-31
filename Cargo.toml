@@ -3,6 +3,12 @@ name = "static-dsp"
 version = "0.1.0"
 authors = ["Bennett Hardwick <me@bennetthardwick.com>"]
 edition = "2018"
+readme = "README.md"
+license = "MIT"
+description = "A no_std dsp library using const generics in Rust."
+repository = "https://github.com/bennetthardwick/static-dsp"
+categories = [ "algorithms", "data-structures", "multimedia" ]
+keywords = [ "audio", "dsp" ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
