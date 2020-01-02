@@ -1,6 +1,6 @@
 use super::{DelayLine, IntoSample, Node, ReadableNode, Sample};
 
-pub struct Comb<T: Sample, const N: usize> {
+pub struct LowpassFeedbackComb<T: Sample, const N: usize> {
     delay_line: DelayLine<T, N>,
     feedback: T,
     filter_state: T,
@@ -8,7 +8,7 @@ pub struct Comb<T: Sample, const N: usize> {
     dampening_inverse: T,
 }
 
-impl<T: Sample, const N: usize> Comb<T, N> {
+impl<T: Sample, const N: usize> LowpassFeedbackComb<T, N> {
     pub fn new() -> Self {
         Self {
             delay_line: DelayLine::new(),
@@ -29,7 +29,7 @@ impl<T: Sample, const N: usize> Comb<T, N> {
     }
 }
 
-impl<T: Sample, const N: usize> Node<T, T> for Comb<T, N> {
+impl<T: Sample, const N: usize> Node<T, T> for LowpassFeedbackComb<T, N> {
     fn process(&mut self, input: T) -> T {
         let output = self.delay_line.read();
 
@@ -48,7 +48,7 @@ mod tests {
 
     #[test]
     fn test_basic_ticking() {
-        let mut comb: Comb<f32, 2> = Comb::new();
+        let mut comb: LowpassFeedbackComb<f32, 2> = LowpassFeedbackComb::new();
         assert_eq!(comb.process(1.0), 0.0);
         assert_eq!(comb.process(0.0), 0.0);
         assert_eq!(comb.process(0.0), 1.0);

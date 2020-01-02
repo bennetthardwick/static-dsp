@@ -1,4 +1,4 @@
-use super::{AllPass, Comb, IntoSample, Node, Sample};
+use super::{AllPass, IntoSample, LowpassFeedbackComb, Node, Sample};
 
 const FIXED_GAIN: f64 = 0.015;
 
@@ -63,14 +63,38 @@ pub struct Freeverb<
     const ALLPASS_TUNING_L4: usize,
     const ALLPASS_TUNING_R4: usize,
 > {
-    comb_1: (Comb<T, COMB_TUNING_L1>, Comb<T, COMB_TUNING_R1>),
-    comb_2: (Comb<T, COMB_TUNING_L2>, Comb<T, COMB_TUNING_R2>),
-    comb_3: (Comb<T, COMB_TUNING_L3>, Comb<T, COMB_TUNING_R3>),
-    comb_4: (Comb<T, COMB_TUNING_L4>, Comb<T, COMB_TUNING_R4>),
-    comb_5: (Comb<T, COMB_TUNING_L5>, Comb<T, COMB_TUNING_R5>),
-    comb_6: (Comb<T, COMB_TUNING_L6>, Comb<T, COMB_TUNING_R6>),
-    comb_7: (Comb<T, COMB_TUNING_L7>, Comb<T, COMB_TUNING_R7>),
-    comb_8: (Comb<T, COMB_TUNING_L8>, Comb<T, COMB_TUNING_R8>),
+    comb_1: (
+        LowpassFeedbackComb<T, COMB_TUNING_L1>,
+        LowpassFeedbackComb<T, COMB_TUNING_R1>,
+    ),
+    comb_2: (
+        LowpassFeedbackComb<T, COMB_TUNING_L2>,
+        LowpassFeedbackComb<T, COMB_TUNING_R2>,
+    ),
+    comb_3: (
+        LowpassFeedbackComb<T, COMB_TUNING_L3>,
+        LowpassFeedbackComb<T, COMB_TUNING_R3>,
+    ),
+    comb_4: (
+        LowpassFeedbackComb<T, COMB_TUNING_L4>,
+        LowpassFeedbackComb<T, COMB_TUNING_R4>,
+    ),
+    comb_5: (
+        LowpassFeedbackComb<T, COMB_TUNING_L5>,
+        LowpassFeedbackComb<T, COMB_TUNING_R5>,
+    ),
+    comb_6: (
+        LowpassFeedbackComb<T, COMB_TUNING_L6>,
+        LowpassFeedbackComb<T, COMB_TUNING_R6>,
+    ),
+    comb_7: (
+        LowpassFeedbackComb<T, COMB_TUNING_L7>,
+        LowpassFeedbackComb<T, COMB_TUNING_R7>,
+    ),
+    comb_8: (
+        LowpassFeedbackComb<T, COMB_TUNING_L8>,
+        LowpassFeedbackComb<T, COMB_TUNING_R8>,
+    ),
 
     allpass_1: (AllPass<T, ALLPASS_TUNING_L1>, AllPass<T, ALLPASS_TUNING_R1>),
     allpass_2: (AllPass<T, ALLPASS_TUNING_L2>, AllPass<T, ALLPASS_TUNING_R2>),
@@ -144,14 +168,14 @@ impl<
 {
     pub fn new() -> Self {
         let mut freeverb = Self {
-            comb_1: (Comb::new(), Comb::new()),
-            comb_2: (Comb::new(), Comb::new()),
-            comb_3: (Comb::new(), Comb::new()),
-            comb_4: (Comb::new(), Comb::new()),
-            comb_5: (Comb::new(), Comb::new()),
-            comb_6: (Comb::new(), Comb::new()),
-            comb_7: (Comb::new(), Comb::new()),
-            comb_8: (Comb::new(), Comb::new()),
+            comb_1: (LowpassFeedbackComb::new(), LowpassFeedbackComb::new()),
+            comb_2: (LowpassFeedbackComb::new(), LowpassFeedbackComb::new()),
+            comb_3: (LowpassFeedbackComb::new(), LowpassFeedbackComb::new()),
+            comb_4: (LowpassFeedbackComb::new(), LowpassFeedbackComb::new()),
+            comb_5: (LowpassFeedbackComb::new(), LowpassFeedbackComb::new()),
+            comb_6: (LowpassFeedbackComb::new(), LowpassFeedbackComb::new()),
+            comb_7: (LowpassFeedbackComb::new(), LowpassFeedbackComb::new()),
+            comb_8: (LowpassFeedbackComb::new(), LowpassFeedbackComb::new()),
 
             allpass_1: (AllPass::new(), AllPass::new()),
             allpass_2: (AllPass::new(), AllPass::new()),
