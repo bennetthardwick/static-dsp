@@ -36,7 +36,33 @@ const ALLPASS_TUNING_R3: usize = 341 + STEREO_SPREAD;
 const ALLPASS_TUNING_L4: usize = 225;
 const ALLPASS_TUNING_R4: usize = 225 + STEREO_SPREAD;
 
-pub struct Freeverb<T: Sample> {
+pub struct Freeverb<
+    T: Sample,
+    const COMB_TUNING_L1: usize,
+    const COMB_TUNING_R1: usize,
+    const COMB_TUNING_L2: usize,
+    const COMB_TUNING_R2: usize,
+    const COMB_TUNING_L3: usize,
+    const COMB_TUNING_R3: usize,
+    const COMB_TUNING_L4: usize,
+    const COMB_TUNING_R4: usize,
+    const COMB_TUNING_L5: usize,
+    const COMB_TUNING_R5: usize,
+    const COMB_TUNING_L6: usize,
+    const COMB_TUNING_R6: usize,
+    const COMB_TUNING_L7: usize,
+    const COMB_TUNING_R7: usize,
+    const COMB_TUNING_L8: usize,
+    const COMB_TUNING_R8: usize,
+    const ALLPASS_TUNING_L1: usize,
+    const ALLPASS_TUNING_R1: usize,
+    const ALLPASS_TUNING_L2: usize,
+    const ALLPASS_TUNING_R2: usize,
+    const ALLPASS_TUNING_L3: usize,
+    const ALLPASS_TUNING_R3: usize,
+    const ALLPASS_TUNING_L4: usize,
+    const ALLPASS_TUNING_R4: usize,
+> {
     comb_1: (Comb<T, COMB_TUNING_L1>, Comb<T, COMB_TUNING_R1>),
     comb_2: (Comb<T, COMB_TUNING_L2>, Comb<T, COMB_TUNING_R2>),
     comb_3: (Comb<T, COMB_TUNING_L3>, Comb<T, COMB_TUNING_R3>),
@@ -61,7 +87,61 @@ pub struct Freeverb<T: Sample> {
     frozen: bool,
 }
 
-impl<T: Sample> Freeverb<T> {
+impl<
+        T: Sample,
+        const COMB_TUNING_L1: usize,
+        const COMB_TUNING_R1: usize,
+        const COMB_TUNING_L2: usize,
+        const COMB_TUNING_R2: usize,
+        const COMB_TUNING_L3: usize,
+        const COMB_TUNING_R3: usize,
+        const COMB_TUNING_L4: usize,
+        const COMB_TUNING_R4: usize,
+        const COMB_TUNING_L5: usize,
+        const COMB_TUNING_R5: usize,
+        const COMB_TUNING_L6: usize,
+        const COMB_TUNING_R6: usize,
+        const COMB_TUNING_L7: usize,
+        const COMB_TUNING_R7: usize,
+        const COMB_TUNING_L8: usize,
+        const COMB_TUNING_R8: usize,
+        const ALLPASS_TUNING_L1: usize,
+        const ALLPASS_TUNING_R1: usize,
+        const ALLPASS_TUNING_L2: usize,
+        const ALLPASS_TUNING_R2: usize,
+        const ALLPASS_TUNING_L3: usize,
+        const ALLPASS_TUNING_R3: usize,
+        const ALLPASS_TUNING_L4: usize,
+        const ALLPASS_TUNING_R4: usize,
+    >
+    Freeverb<
+        T,
+        COMB_TUNING_L1,
+        COMB_TUNING_R1,
+        COMB_TUNING_L2,
+        COMB_TUNING_R2,
+        COMB_TUNING_L3,
+        COMB_TUNING_R3,
+        COMB_TUNING_L4,
+        COMB_TUNING_R4,
+        COMB_TUNING_L5,
+        COMB_TUNING_R5,
+        COMB_TUNING_L6,
+        COMB_TUNING_R6,
+        COMB_TUNING_L7,
+        COMB_TUNING_R7,
+        COMB_TUNING_L8,
+        COMB_TUNING_R8,
+        ALLPASS_TUNING_L1,
+        ALLPASS_TUNING_R1,
+        ALLPASS_TUNING_L2,
+        ALLPASS_TUNING_R2,
+        ALLPASS_TUNING_L3,
+        ALLPASS_TUNING_R3,
+        ALLPASS_TUNING_L4,
+        ALLPASS_TUNING_R4,
+    >
+{
     pub fn new() -> Self {
         let mut freeverb = Self {
             comb_1: (Comb::new(), Comb::new()),
@@ -188,7 +268,61 @@ impl<T: Sample> Freeverb<T> {
     }
 }
 
-impl<T: Sample> Node<(T, T), (T, T)> for Freeverb<T> {
+impl<
+        T: Sample,
+        const COMB_TUNING_L1: usize,
+        const COMB_TUNING_R1: usize,
+        const COMB_TUNING_L2: usize,
+        const COMB_TUNING_R2: usize,
+        const COMB_TUNING_L3: usize,
+        const COMB_TUNING_R3: usize,
+        const COMB_TUNING_L4: usize,
+        const COMB_TUNING_R4: usize,
+        const COMB_TUNING_L5: usize,
+        const COMB_TUNING_R5: usize,
+        const COMB_TUNING_L6: usize,
+        const COMB_TUNING_R6: usize,
+        const COMB_TUNING_L7: usize,
+        const COMB_TUNING_R7: usize,
+        const COMB_TUNING_L8: usize,
+        const COMB_TUNING_R8: usize,
+        const ALLPASS_TUNING_L1: usize,
+        const ALLPASS_TUNING_R1: usize,
+        const ALLPASS_TUNING_L2: usize,
+        const ALLPASS_TUNING_R2: usize,
+        const ALLPASS_TUNING_L3: usize,
+        const ALLPASS_TUNING_R3: usize,
+        const ALLPASS_TUNING_L4: usize,
+        const ALLPASS_TUNING_R4: usize,
+    > Node<(T, T), (T, T)>
+    for Freeverb<
+        T,
+        COMB_TUNING_L1,
+        COMB_TUNING_R1,
+        COMB_TUNING_L2,
+        COMB_TUNING_R2,
+        COMB_TUNING_L3,
+        COMB_TUNING_R3,
+        COMB_TUNING_L4,
+        COMB_TUNING_R4,
+        COMB_TUNING_L5,
+        COMB_TUNING_R5,
+        COMB_TUNING_L6,
+        COMB_TUNING_R6,
+        COMB_TUNING_L7,
+        COMB_TUNING_R7,
+        COMB_TUNING_L8,
+        COMB_TUNING_R8,
+        ALLPASS_TUNING_L1,
+        ALLPASS_TUNING_R1,
+        ALLPASS_TUNING_L2,
+        ALLPASS_TUNING_R2,
+        ALLPASS_TUNING_L3,
+        ALLPASS_TUNING_R3,
+        ALLPASS_TUNING_L4,
+        ALLPASS_TUNING_R4,
+    >
+{
     #[inline]
     fn process(&mut self, input: (T, T)) -> (T, T) {
         let input_mixed = (input.0 + input.1) * FIXED_GAIN.into_sample() * self.input_gain;
@@ -237,3 +371,31 @@ impl<T: Sample> Node<(T, T), (T, T)> for Freeverb<T> {
         )
     }
 }
+
+pub type Freeverb44100<T> = Freeverb<
+    T,
+    COMB_TUNING_L1,
+    COMB_TUNING_R1,
+    COMB_TUNING_L2,
+    COMB_TUNING_R2,
+    COMB_TUNING_L3,
+    COMB_TUNING_R3,
+    COMB_TUNING_L4,
+    COMB_TUNING_R4,
+    COMB_TUNING_L5,
+    COMB_TUNING_R5,
+    COMB_TUNING_L6,
+    COMB_TUNING_R6,
+    COMB_TUNING_L7,
+    COMB_TUNING_R7,
+    COMB_TUNING_L8,
+    COMB_TUNING_R8,
+    ALLPASS_TUNING_L1,
+    ALLPASS_TUNING_R1,
+    ALLPASS_TUNING_L2,
+    ALLPASS_TUNING_R2,
+    ALLPASS_TUNING_L3,
+    ALLPASS_TUNING_R3,
+    ALLPASS_TUNING_L4,
+    ALLPASS_TUNING_R4,
+>;

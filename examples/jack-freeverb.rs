@@ -1,5 +1,5 @@
 use jack::{AudioIn, AudioOut, Client, ClientOptions};
-use static_dsp::{Freeverb, Node};
+use static_dsp::{Freeverb44100 as Freeverb, Node};
 
 fn main() {
     let client = Client::new("jack_freeverb", ClientOptions::NO_START_SERVER)
