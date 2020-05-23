@@ -1,29 +1,22 @@
-use super::{Node, ReadableNode, Sample};
-use core::mem::MaybeUninit;
+use super::{Node, ReadableNode};
 
-pub struct DelayLine<T, const N: usize> {
-    buffer: [T; N],
+pub struct DelayLine<const N: usize> {
+    buffer: [f32; N],
     index: usize,
 }
 
-impl<T: Sample, const N: usize> DelayLine<T, N> {
+impl<const N: usize> DelayLine<N> {
     pub fn new() -> Self {
-        let mut delay = unsafe {
-            Self {
-                buffer: MaybeUninit::uninit().assume_init(),
-                index: 0,
-            }
-        };
-
-        delay.buffer.iter_mut().for_each(|x| *x = T::equilibrium());
-
-        delay
+        Self {
+            buffer: [0.; N],
+            index: 0,
+        }
     }
 }
 
-impl<T: Sample, const N: usize> Node<T, T> for DelayLine<T, N> {
+impl<const N: usize> Node<f32, f32> for DelayLine<N> {
     #[inline]
-    fn process(&mut self, input: T) -> T {
+    fn process(&mut self, input: f32) -> f32 {
         self.buffer[self.index] = input;
 
         if (self.index + 1) < self.buffer.len() {
@@ -36,9 +29,9 @@ impl<T: Sample, const N: usize> Node<T, T> for DelayLine<T, N> {
     }
 }
 
-impl<T: Sample, const N: usize> ReadableNode<T> for DelayLine<T, N> {
+impl<const N: usize> ReadableNode<f32> for DelayLine<N> {
     #[inline]
-    fn read(&self) -> T {
+    fn read(&self) -> f32 {
         self.buffer[self.index]
     }
 }
@@ -49,7 +42,7 @@ mod tests {
 
     #[test]
     fn test_should_instansiate() {
-        let delay: DelayLine<f32, 10> = DelayLine::new();
+        let delay: DelayLine<10> = DelayLine::new();
 
         for x in delay.buffer.iter() {
             assert_eq!(x, &f32::default());

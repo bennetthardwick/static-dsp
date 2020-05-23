@@ -1,36 +1,36 @@
-use super::{DelayLine, IntoSample, Node, ReadableNode, Sample};
+use super::{DelayLine, Node, ReadableNode};
 
-pub struct LowpassFeedbackComb<T: Sample, const N: usize> {
-    delay_line: DelayLine<T, N>,
-    feedback: T,
-    filter_state: T,
-    dampening: T,
-    dampening_inverse: T,
+pub struct LowpassFeedbackComb<const N: usize> {
+    delay_line: DelayLine<N>,
+    feedback: f32,
+    filter_state: f32,
+    dampening: f32,
+    dampening_inverse: f32,
 }
 
-impl<T: Sample, const N: usize> LowpassFeedbackComb<T, N> {
+impl<const N: usize> LowpassFeedbackComb<N> {
     pub fn new() -> Self {
         Self {
             delay_line: DelayLine::new(),
-            feedback: 0.5.into_sample(),
-            filter_state: T::equilibrium(),
-            dampening: 0.5.into_sample(),
-            dampening_inverse: 0.5.into_sample(),
+            feedback: 0.5,
+            filter_state: 0.,
+            dampening: 0.5,
+            dampening_inverse: 0.5,
         }
     }
 
-    pub fn set_dampening(&mut self, value: T) {
+    pub fn set_dampening(&mut self, value: f32) {
         self.dampening = value;
-        self.dampening_inverse = T::peak() - value;
+        self.dampening_inverse = 1. - value;
     }
 
-    pub fn set_feedback(&mut self, value: T) {
+    pub fn set_feedback(&mut self, value: f32) {
         self.feedback = value;
     }
 }
 
-impl<T: Sample, const N: usize> Node<T, T> for LowpassFeedbackComb<T, N> {
-    fn process(&mut self, input: T) -> T {
+impl<const N: usize> Node<f32, f32> for LowpassFeedbackComb<N> {
+    fn process(&mut self, input: f32) -> f32 {
         let output = self.delay_line.read();
 
         self.filter_state = output * self.dampening_inverse + self.filter_state * self.dampening;
@@ -48,7 +48,7 @@ mod tests {
 
     #[test]
     fn test_basic_ticking() {
-        let mut comb: LowpassFeedbackComb<f32, 2> = LowpassFeedbackComb::new();
+        let mut comb: LowpassFeedbackComb<2> = LowpassFeedbackComb::new();
         assert_eq!(comb.process(1.0), 0.0);
         assert_eq!(comb.process(0.0), 0.0);
         assert_eq!(comb.process(0.0), 1.0);

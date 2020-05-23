@@ -13,6 +13,7 @@ keywords = [ "audio", "dsp" ]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+libm = "0.2.1"
 
 [dev-dependencies]
 jack = "0.6"

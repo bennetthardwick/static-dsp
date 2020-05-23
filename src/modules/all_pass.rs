@@ -1,10 +1,10 @@
-use super::{DelayLine, IntoSample, Node, ReadableNode, Sample};
+use super::{DelayLine, Node, ReadableNode};
 
-pub struct AllPass<T, const N: usize> {
-    delay_line: DelayLine<T, N>,
+pub struct AllPass<const N: usize> {
+    delay_line: DelayLine<N>,
 }
 
-impl<T: Sample, const N: usize> AllPass<T, N> {
+impl<const N: usize> AllPass<N> {
     pub fn new() -> Self {
         Self {
             delay_line: DelayLine::new(),
@@ -12,13 +12,13 @@ impl<T: Sample, const N: usize> AllPass<T, N> {
     }
 }
 
-impl<T: Sample, const N: usize> Node<T, T> for AllPass<T, N> {
-    fn process(&mut self, input: T) -> T {
+impl<const N: usize> Node<f32, f32> for AllPass<N> {
+    fn process(&mut self, input: f32) -> f32 {
         let delayed = self.delay_line.read();
 
         let output = -input + delayed;
 
-        let feedback: T = 0.5.into_sample();
+        let feedback: f32 = 0.5;
 
         self.delay_line.process(input + delayed * feedback);
 
@@ -32,7 +32,7 @@ mod tests {
 
     #[test]
     fn test_basic_ticking() {
-        let mut allpass: AllPass<f32, 2> = AllPass::new();
+        let mut allpass: AllPass<2> = AllPass::new();
         assert_eq!(allpass.process(1.0), -1.0);
         assert_eq!(allpass.process(0.0), 0.0);
         assert_eq!(allpass.process(0.0), 1.0);

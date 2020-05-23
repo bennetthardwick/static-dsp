@@ -1,12 +1,12 @@
-use super::{AllPass, IntoSample, LowpassFeedbackComb, Node, Sample};
+use super::{AllPass, LowpassFeedbackComb, Node};
 
-const FIXED_GAIN: f64 = 0.015;
+const FIXED_GAIN: f32 = 0.015;
 
-const SCALE_WET: f64 = 3.0;
-const SCALE_DAMPENING: f64 = 0.4;
+const SCALE_WET: f32 = 3.0;
+const SCALE_DAMPENING: f32 = 0.4;
 
-const SCALE_ROOM: f64 = 0.28;
-const OFFSET_ROOM: f64 = 0.7;
+const SCALE_ROOM: f32 = 0.28;
+const OFFSET_ROOM: f32 = 0.7;
 
 const STEREO_SPREAD: usize = 23;
 
@@ -37,7 +37,6 @@ const ALLPASS_TUNING_L4: usize = 225;
 const ALLPASS_TUNING_R4: usize = 225 + STEREO_SPREAD;
 
 pub struct Freeverb<
-    T: Sample,
     const COMB_TUNING_L1: usize,
     const COMB_TUNING_R1: usize,
     const COMB_TUNING_L2: usize,
@@ -64,55 +63,54 @@ pub struct Freeverb<
     const ALLPASS_TUNING_R4: usize,
 > {
     comb_1: (
-        LowpassFeedbackComb<T, COMB_TUNING_L1>,
-        LowpassFeedbackComb<T, COMB_TUNING_R1>,
+        LowpassFeedbackComb<COMB_TUNING_L1>,
+        LowpassFeedbackComb<COMB_TUNING_R1>,
     ),
     comb_2: (
-        LowpassFeedbackComb<T, COMB_TUNING_L2>,
-        LowpassFeedbackComb<T, COMB_TUNING_R2>,
+        LowpassFeedbackComb<COMB_TUNING_L2>,
+        LowpassFeedbackComb<COMB_TUNING_R2>,
     ),
     comb_3: (
-        LowpassFeedbackComb<T, COMB_TUNING_L3>,
-        LowpassFeedbackComb<T, COMB_TUNING_R3>,
+        LowpassFeedbackComb<COMB_TUNING_L3>,
+        LowpassFeedbackComb<COMB_TUNING_R3>,
     ),
     comb_4: (
-        LowpassFeedbackComb<T, COMB_TUNING_L4>,
-        LowpassFeedbackComb<T, COMB_TUNING_R4>,
+        LowpassFeedbackComb<COMB_TUNING_L4>,
+        LowpassFeedbackComb<COMB_TUNING_R4>,
     ),
     comb_5: (
-        LowpassFeedbackComb<T, COMB_TUNING_L5>,
-        LowpassFeedbackComb<T, COMB_TUNING_R5>,
+        LowpassFeedbackComb<COMB_TUNING_L5>,
+        LowpassFeedbackComb<COMB_TUNING_R5>,
     ),
     comb_6: (
-        LowpassFeedbackComb<T, COMB_TUNING_L6>,
-        LowpassFeedbackComb<T, COMB_TUNING_R6>,
+        LowpassFeedbackComb<COMB_TUNING_L6>,
+        LowpassFeedbackComb<COMB_TUNING_R6>,
     ),
     comb_7: (
-        LowpassFeedbackComb<T, COMB_TUNING_L7>,
-        LowpassFeedbackComb<T, COMB_TUNING_R7>,
+        LowpassFeedbackComb<COMB_TUNING_L7>,
+        LowpassFeedbackComb<COMB_TUNING_R7>,
     ),
     comb_8: (
-        LowpassFeedbackComb<T, COMB_TUNING_L8>,
-        LowpassFeedbackComb<T, COMB_TUNING_R8>,
+        LowpassFeedbackComb<COMB_TUNING_L8>,
+        LowpassFeedbackComb<COMB_TUNING_R8>,
     ),
 
-    allpass_1: (AllPass<T, ALLPASS_TUNING_L1>, AllPass<T, ALLPASS_TUNING_R1>),
-    allpass_2: (AllPass<T, ALLPASS_TUNING_L2>, AllPass<T, ALLPASS_TUNING_R2>),
-    allpass_3: (AllPass<T, ALLPASS_TUNING_L3>, AllPass<T, ALLPASS_TUNING_R3>),
-    allpass_4: (AllPass<T, ALLPASS_TUNING_L4>, AllPass<T, ALLPASS_TUNING_R4>),
+    allpass_1: (AllPass<ALLPASS_TUNING_L1>, AllPass<ALLPASS_TUNING_R1>),
+    allpass_2: (AllPass<ALLPASS_TUNING_L2>, AllPass<ALLPASS_TUNING_R2>),
+    allpass_3: (AllPass<ALLPASS_TUNING_L3>, AllPass<ALLPASS_TUNING_R3>),
+    allpass_4: (AllPass<ALLPASS_TUNING_L4>, AllPass<ALLPASS_TUNING_R4>),
 
-    wet_gains: (T, T),
-    wet: T,
-    width: T,
-    dry: T,
-    input_gain: T,
-    dampening: T,
-    room_size: T,
+    wet_gains: (f32, f32),
+    wet: f32,
+    width: f32,
+    dry: f32,
+    input_gain: f32,
+    dampening: f32,
+    room_size: f32,
     frozen: bool,
 }
 
 impl<
-        T: Sample,
         const COMB_TUNING_L1: usize,
         const COMB_TUNING_R1: usize,
         const COMB_TUNING_L2: usize,
@@ -139,7 +137,6 @@ impl<
         const ALLPASS_TUNING_R4: usize,
     >
     Freeverb<
-        T,
         COMB_TUNING_L1,
         COMB_TUNING_R1,
         COMB_TUNING_L2,
@@ -182,27 +179,27 @@ impl<
             allpass_3: (AllPass::new(), AllPass::new()),
             allpass_4: (AllPass::new(), AllPass::new()),
 
-            wet_gains: (T::equilibrium(), T::equilibrium()),
-            wet: T::equilibrium(),
-            width: T::equilibrium(),
-            dry: T::equilibrium(),
-            input_gain: T::equilibrium(),
-            dampening: T::equilibrium(),
-            room_size: T::equilibrium(),
+            wet_gains: (0., 0.),
+            wet: 0.,
+            width: 0.,
+            dry: 0.,
+            input_gain: 0.,
+            dampening: 0.,
+            room_size: 0.,
             frozen: false,
         };
 
-        freeverb.set_wet(1.0.into_sample());
-        freeverb.set_width(0.5.into_sample());
-        freeverb.set_dampening(0.5.into_sample());
-        freeverb.set_room_size(0.5.into_sample());
+        freeverb.set_wet(1.0);
+        freeverb.set_width(0.5);
+        freeverb.set_dampening(0.5);
+        freeverb.set_room_size(0.5);
         freeverb.set_frozen(false);
 
         freeverb
     }
 
-    pub fn set_dampening(&mut self, value: T) {
-        self.dampening = value * SCALE_DAMPENING.into_sample();
+    pub fn set_dampening(&mut self, value: f32) {
+        self.dampening = value * SCALE_DAMPENING;
         self.update_combs();
     }
 
@@ -211,37 +208,37 @@ impl<
         self.update_combs();
     }
 
-    pub fn set_wet(&mut self, value: T) {
-        self.wet = value * SCALE_WET.into_sample();
+    pub fn set_wet(&mut self, value: f32) {
+        self.wet = value * SCALE_WET;
         self.update_wet_gains();
     }
 
-    pub fn set_width(&mut self, value: T) {
+    pub fn set_width(&mut self, value: f32) {
         self.width = value;
         self.update_wet_gains();
     }
 
     fn update_wet_gains(&mut self) {
         self.wet_gains = (
-            self.wet * (self.width / 2.0.into_sample() + 0.5.into_sample()),
-            self.wet * ((1.0.into_sample::<T>() - self.width) / 2.0.into_sample()),
+            self.wet * (self.width / 2.0 + 0.5),
+            self.wet * ((1.0 - self.width) / 2.0),
         )
     }
 
     fn set_frozen(&mut self, frozen: bool) {
         self.frozen = frozen;
-        self.input_gain = if frozen { T::equilibrium() } else { T::peak() };
+        self.input_gain = if frozen { 0. } else { 1. };
         self.update_combs();
     }
 
-    pub fn set_room_size(&mut self, value: T) {
-        self.room_size = value * SCALE_ROOM.into_sample() + OFFSET_ROOM.into_sample();
+    pub fn set_room_size(&mut self, value: f32) {
+        self.room_size = value * SCALE_ROOM + OFFSET_ROOM;
         self.update_combs();
     }
 
     fn update_combs(&mut self) {
         let (feedback, dampening) = if self.frozen {
-            (T::peak(), T::equilibrium())
+            (1., 0.)
         } else {
             (self.room_size, self.dampening)
         };
@@ -287,13 +284,12 @@ impl<
         self.comb_8.1.set_dampening(dampening);
     }
 
-    pub fn set_dry(&mut self, value: T) {
+    pub fn set_dry(&mut self, value: f32) {
         self.dry = value;
     }
 }
 
 impl<
-        T: Sample,
         const COMB_TUNING_L1: usize,
         const COMB_TUNING_R1: usize,
         const COMB_TUNING_L2: usize,
@@ -318,9 +314,8 @@ impl<
         const ALLPASS_TUNING_R3: usize,
         const ALLPASS_TUNING_L4: usize,
         const ALLPASS_TUNING_R4: usize,
-    > Node<(T, T), (T, T)>
+    > Node<(f32, f32), (f32, f32)>
     for Freeverb<
-        T,
         COMB_TUNING_L1,
         COMB_TUNING_R1,
         COMB_TUNING_L2,
@@ -348,10 +343,10 @@ impl<
     >
 {
     #[inline]
-    fn process(&mut self, input: (T, T)) -> (T, T) {
-        let input_mixed = (input.0 + input.1) * FIXED_GAIN.into_sample() * self.input_gain;
+    fn process(&mut self, input: (f32, f32)) -> (f32, f32) {
+        let input_mixed = (input.0 + input.1) * FIXED_GAIN * self.input_gain;
 
-        let mut output = (T::equilibrium(), T::equilibrium());
+        let mut output = (0., 0.);
 
         output.0 += self.comb_1.0.process(input_mixed);
         output.1 += self.comb_1.1.process(input_mixed);
@@ -397,7 +392,6 @@ impl<
 }
 
 pub type Freeverb44100<T> = Freeverb<
-    T,
     COMB_TUNING_L1,
     COMB_TUNING_R1,
     COMB_TUNING_L2,
